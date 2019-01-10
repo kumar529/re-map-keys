@@ -1,5 +1,5 @@
 {
-  "name": "re-map-keys",
+  "name": "rename-jskeys",
   "version": "1.0.0",
   "description": "This package renames keys in javascript object",
   "main": "dist/index.js",
