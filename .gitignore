@@ -62,3 +62,6 @@ typings/
 
 #package json lock file
 package-lock.json
+
+#output directory
+dist

@@ -1,13 +1,14 @@
 {
   "name": "re-map-keys",
   "version": "1.0.0",
-  "description": "",
-  "main": "lib/index.js",
-  "types": "lib/index",
+  "description": "This package renames keys in javascript object",
+  "main": "dist/index.js",
+  "types": "dist/index",
   "scripts": {
+    "build": "tsc",
     "test": "mocha -r ts-node/register test/**/*.spec.ts"
   },
-  "keywords": [],
+  "keywords": ["re-map-keys", "rename keys", "key renaming"],
   "author": "Rahul Kumar",
   "license": "ISC",
   "devDependencies": {
