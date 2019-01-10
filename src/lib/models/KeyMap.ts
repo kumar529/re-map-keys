@@ -1,4 +1,4 @@
 export interface KeyMap {
-    fromKey: string,
-    toKey: string
+    fromKey: string;
+    toKey: string;
 }

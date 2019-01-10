@@ -6,9 +6,15 @@
   "types": "dist/index",
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
   },
-  "keywords": ["re-map-keys", "rename keys", "key renaming"],
+  "keywords": [
+    "re-map-keys",
+    "rename keys",
+    "key renaming"
+  ],
   "author": "Rahul Kumar",
   "license": "ISC",
   "devDependencies": {
@@ -18,7 +24,10 @@
     "@types/node": "^10.12.18",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "prettier": "^1.15.3",
     "ts-node": "^7.0.1",
+    "tslint": "^5.12.0",
+    "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.2.2"
   },
   "dependencies": {

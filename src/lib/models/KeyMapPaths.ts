@@ -1,4 +1,4 @@
 export interface KeyMapPaths {
-    fromKeyPath: string[],
-    toKeyPath: string[]
+    fromKeyPath: string[];
+    toKeyPath: string[];
 }
