@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { Utils } from '../../../src/lib/utils/Utils';
 
-describe("null or blank string", () => {
+describe("null or blank string test cases", () => {
     it("is null or blank string", () => {
         let input: string = "";
         expect(Utils.isNullOrBlank(input)).to.equal(true);

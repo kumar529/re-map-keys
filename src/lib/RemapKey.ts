@@ -17,11 +17,11 @@ export class RemapKey {
             throw new Error("Object path cannot be blank");
         }
         keyMaps.forEach(keyMap => {
-            this.mapSinglePath(sourceObj, keyMap.fromKey, keyMap.toKey);
+            this.mapSingleKey(sourceObj, keyMap.fromKey, keyMap.toKey);
         })
     }
 
-    public static mapSinglePath(sourceObj: any, fromKey: string, toKey: string){
+    public static mapSingleKey(sourceObj: any, fromKey: string, toKey: string){
         let fromKeyPaths = fromKey.split(".");
         let toKeyPaths = toKey.split(".");
         if(Utils.isNullOrBlankAny(fromKeyPaths) || Utils.isNullOrBlankAny(toKeyPaths)){
@@ -36,7 +36,7 @@ export class RemapKey {
                     throw new Error("Source object doesn't contain array on the given path");
                 }
                 for (let j = 0; j < currentObj.length; j++) {
-                    this.mapSinglePath(currentObj[j], fromKeyPaths.slice(i + 1).join("."), toKeyPaths.slice(i + 1).join("."));
+                    this.mapSingleKey(currentObj[j], fromKeyPaths.slice(i + 1).join("."), toKeyPaths.slice(i + 1).join("."));
                 }
                 break;
             }
@@ -53,16 +53,22 @@ export class RemapKey {
                 }
             }
         }
-
     }
 
     private static _mapSinglePathArray(sourceObj: any, fromKeyPaths: string[], toKeyPaths: string[]){
         let fromKeyVal = _.get(sourceObj, fromKeyPaths, null);
         if(fromKeyVal){
             _.set(sourceObj, toKeyPaths, fromKeyVal);
-            _.unset(sourceObj, fromKeyPaths);
+            if(fromKeyPaths.length === toKeyPaths.length){
+                _.unset(sourceObj, fromKeyPaths);
+            }
+            else{
+                for (let i = fromKeyPaths.length - 1; i >= 0; i--) {
+                    _.unset(sourceObj, fromKeyPaths.slice(0, i + 1));
+                }
+            }
         }
-        throw new Error("Source path " + fromKeyPaths.join(".") + " not found");
+        else throw new Error("Source path " + fromKeyPaths.join(".") + " not found");
     }
 
     private static _mapSinglePath(sourceObj: any, fromSimpleKey: string, toSimpleKey: string){
@@ -71,7 +77,7 @@ export class RemapKey {
             _.set(sourceObj, toSimpleKey, fromKeyVal);
             _.unset(sourceObj, fromSimpleKey);
         }
-        throw new Error("Source path " + fromSimpleKey + " not found");
+        else throw new Error("Source path " + fromSimpleKey + " not found");
     }
 
     private static _isValidKeyMapPaths(keyMapPaths: KeyMapPaths[]){
