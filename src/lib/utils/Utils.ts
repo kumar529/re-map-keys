@@ -1,6 +1,6 @@
 export class Utils {
     public static isNullOrBlank(key: string){
-        return key.trim() === "";
+        return !key || key.trim() === "";
     }
 
     public static isNullOrBlankAny(keys: string[]){

@@ -6,7 +6,7 @@ import _ from "lodash";
 
 export class RemapKey {
 
-    private static isArrayKeyRegex = /^[^\[]+\]$/;
+    private static ARRAY_NOTATION = "ARRAY";
 
     public static mapAllKeys(sourceObj: any, keyMaps: KeyMap[]){
         let keyMapPaths: KeyMapPaths[] = []; 
@@ -16,6 +16,9 @@ export class RemapKey {
         if(!this._isValidKeyMapPaths(keyMapPaths)){
             throw new Error("Object path cannot be blank");
         }
+        keyMaps.forEach(keyMap => {
+            this.mapSinglePath(sourceObj, keyMap.fromKey, keyMap.toKey);
+        })
     }
 
     public static mapSinglePath(sourceObj: any, fromKey: string, toKey: string){
@@ -25,14 +28,32 @@ export class RemapKey {
             throw new Error("Path cannot be blank");
         }
 
-        
-        let isSourceContainArrayPath = false;
-        let isDestinationContainArrayPath = false;
-        fromKeyPaths.forEach(path => {
-            if(this.isArrayKeyRegex.test(path)){
-
+        let currentObj: any = sourceObj;
+        let minPathLen = fromKeyPaths.length < toKeyPaths.length ? fromKeyPaths.length : toKeyPaths.length
+        for (let i = 0; i < minPathLen; i++) {
+            if(fromKeyPaths[i] === this.ARRAY_NOTATION && toKeyPaths[i] === this.ARRAY_NOTATION){
+                if(!Array.isArray(currentObj)){
+                    throw new Error("Source object doesn't contain array on the given path");
+                }
+                for (let j = 0; j < currentObj.length; j++) {
+                    this.mapSinglePath(currentObj[j], fromKeyPaths.slice(i + 1).join("."), toKeyPaths.slice(i + 1).join("."));
+                }
+                break;
             }
-        });
+            else if(fromKeyPaths[i] === this.ARRAY_NOTATION || toKeyPaths[i] === this.ARRAY_NOTATION){
+                throw new Error("Only source or target contains ARRAY notation");
+            }
+            else if(!Utils.isNullOrBlank(fromKeyPaths[i]) && !Utils.isNullOrBlank(toKeyPaths[i])){
+                if(!Utils.isNullOrBlank(fromKeyPaths[i + 1]) && !Utils.isNullOrBlank(toKeyPaths[i + 1])){
+                    this._mapSinglePath(currentObj, fromKeyPaths[i], toKeyPaths[i]);
+                    currentObj = _.get(currentObj, toKeyPaths[i]);
+                }
+                else{
+                    this._mapSinglePathArray(currentObj, fromKeyPaths.slice(i), toKeyPaths.slice(i));
+                }
+            }
+        }
+
     }
 
     private static _mapSinglePathArray(sourceObj: any, fromKeyPaths: string[], toKeyPaths: string[]){
